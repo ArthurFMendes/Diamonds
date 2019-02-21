@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Aug 10 18:11:26 2018
 
-@author: chase.kusterer
+@author: ArthurFMendes
 
 Purpose:
     This code is meant to treat missing values in the diamond dataset
@@ -51,11 +50,6 @@ diamonds.tail(n = 10)
 
 
 # We can view subsets of columns and rows with loc and iloc
-
-"""
-Prof. Chase:
-    The syntax for loc and iloc is [rows, columns].
-"""
 
 diamonds.loc[:, 'carat']
 
@@ -109,14 +103,8 @@ diamonds['carat'][
         ]
 
 
-# See Footnote 1 for an explanation of the code above
 
-
-
-"""
-Practice:
-    Which diamonds cost less than or equal to 1000 (USD)?
-"""
+####Which diamonds cost less than or equal to 1000 (USD)?
 
 diamonds[diamonds['price'] <= 1000]
 
@@ -130,11 +118,7 @@ diamonds[diamonds['price'] <= 1000].sort_values(['price'],ascending= False)
 
 
 
-"""
-Prof. Chase:
-    The code above is starting to look complicated. Let's make things
-    simpler by creating a new object.
-"""
+
 
 
 low_price = diamonds[diamonds['price'] <= 1000]
@@ -199,15 +183,7 @@ print(
 )
 
 
-# See Footnote 3 for an explanation of the code above
 
-
-
-"""
-Prof. Chase:
-    As with before, we can simplify our code by saving things as
-    objects.
-"""
 
 missing_diamonds = diamonds.isnull().sum()
 
@@ -225,13 +201,7 @@ missing_ratio.round(2)
 # Flagging missing values
 ###############################################################################
 
-"""
-Prof. Chase:
-    This is an important step for two reasons:
-        1) to keep record as to which values have been changed
-        2) the fact that a value was missing can in and of itself be
-           predictive
-"""
+
 
 
 # How to create a missing value flag
@@ -251,12 +221,7 @@ diamonds['carat'].isnull().astype(int)
 
 
 
-"""
-Prof. Chase:
-    The outer parenthesis in the code above were added so that the code
-    could be spread out on mulitple lines. Other than this they are not
-    necessary, as can be seen in the code below.
-"""
+
 
 
 """
@@ -286,7 +251,6 @@ diamonds['m_clarity'] = diamonds['clarity'].isnull().astype(int)
 diamonds['m_cut'] = diamonds['cut'].isnull().astype(int)
 
 
-# See Footnote 1 for a breakdown of the code above
 
 
 
@@ -306,20 +270,12 @@ print(diamonds['m_carat']
 diamonds['carat'].isnull().sum() == diamonds['m_carat'].sum()
 
 
-# See Footnote 5 for an explanation of the code above
-
 
 
 ###############################################################################
 # Looping through missing values
 ###############################################################################
 
-"""
-Prof. Chase:
-    This section may seem advanced. Please keep in mind that although
-    coding a loop like the one below may take several hours to perfect,
-    once it is coded, it can be used over and over again.
-"""
 
 
 # Resetting the dataset
@@ -337,9 +293,6 @@ for col in diamonds:
         diamonds['m_'+col] = diamonds[col].isnull().astype(int)
 
 
-# See Footnote 6 for a breakdown of the code above
-
-
 
 # checking to see if the for loop worked
 print(diamonds.head())
@@ -348,12 +301,6 @@ print(diamonds.head())
 # making a more formal check
 a = diamonds.isnull().sum().sum()
 b = diamonds.iloc[:,-5:].sum().sum()
-
-
-"""
-For the footnotes:
-diamonds.loc[:,['m_carat', 'm_color', 'm_clarity', 'm_cut']].sum().sum()
-"""
 
 
 
@@ -367,16 +314,7 @@ else:
 # Imputing missing values
 ###############################################################################
 
-"""
-Prof. Chase:
-   In the following code, we are going to attempt three fill methods
-   for our missing values: mean, median, and dropping missing values.
-   
-   To start, we need three different datasets
-"""
-
-
-# Let's start by creating three different datasets
+# Start by creating three different datasets
 
 
 # The following code copies and makes each DataFrame independent
@@ -387,11 +325,6 @@ df_median = pd.DataFrame.copy(df_mean)
 
 
 df_dropped = pd.DataFrame.copy(df_median)
-
-
-
-# See Footnote 7 for a breakdown of the code above
-
 
 
 # We could fill each column one-by-one
@@ -490,27 +423,7 @@ print(df_dropped.isnull()
 # Choosing imputation techniques
 ###############################################################################
 
-"""
-Prof. Chase:
-    Oftentimes, choosing an imputation technique is regarded as more of
-    an art than a science. We can start by:
-        a) checking available domain knowledge
-        b) looking for noticable patterns in the dataset
-        c) checking a variable's distribution and choosing an appropriate
-           measure of center
-"""
-
 # Checking variable distributions
-
-"""
-Prof. Chase:
-    Several statistical and graphical functions cannot handle missing
-    data and will throw a ValueError (i.e. ValueError: max must be
-    larger than min in range parameter.)
-    
-    Having a dataset like 'df_dropped' can be very helpful in situations
-    such as these.
-"""
 
 # Creating histograms
 plt.hist(df_dropped['carat'], bins = 50)
@@ -530,7 +443,7 @@ plt.show()
 
 
 
-# Let's develop something more sophisticated
+# Develop something more sophisticated
 
 ###################
 # Mean or median? #
@@ -574,9 +487,6 @@ plt.xlabel('Cut')
 
 plt.savefig('Histograms before Imputation.png')
 plt.show()
-
-
-# See Footnote 12 for an explanation of the code above
 
 
 
@@ -688,209 +598,3 @@ plt.show()
 
 # saving dataset
 diamonds.to_excel('diamonds_imputed.xlsx', index = False)
-
-
-"""
-###############################################################################
-# Footnotes
-###############################################################################
-
-
-Footnote 0: the purpose of footnotes
-
-to give a line-by-line explanation of a code snippet
-
-
-*******************************************************************************
-
-
-Footnote 1: subsetting on multiple criteria
-
-diamonds['carat']                 # take the carat column from diamonds
-[(diamonds['carat'] > 1)          # subset so that each carat is > 1
-&                                 # and also
-(diamonds['carat'] < 2)]          # subset so that each carat is < 2
-
-
-*******************************************************************************
-
-
-Footnote 2: subsetting and sorting values
-
-diamonds                          # take the whole diamonds dataset
-[diamonds['price'] <= 1000]       # subset where price <= 1000
-.sort_values(['price'],           # sort each value based on price
-ascending= False)                 # such that the highest price is at the top
-
-
-*******************************************************************************
-
-
-Footnote 3: subsetting and sorting values
-
-print(                            # wrapping the call around a print statement
-((diamonds                        # calling the diamonds dataset
-.isnull()                         # checking to see if there are any missing values
-.sum())                           # and adding all the missing values together per column
-/                                 # ... dividing this result by
-len(diamonds)                     # the total number of observations in the dataset
-)                                 # closing the print statement
-
-
-*******************************************************************************
-
-
-Footnote 4: displaying missing value flags
-
-(                                 # allows for spreading a call on multiple lines
-diamonds['carat']                 # calling the carat column of diamonds
-.isnull()                         # checking each observation for missing values (True or False)
-.astype(int)                      # converting the True/False to an integer (1 or 0)
-.sort_values(ascending = False)   # sorting so that the 1's are at the top
-)                                 # closing the call
-
-
-*******************************************************************************
-
-
-Footnote 5: checking to see if all missing values have been flagged
-
-diamonds['carat']                 # calling the carat column of diamonds
-.isnull()                         # checking each observation for missing values (True or False)
-.sum()                            # adding the number of missing values together
-==                                # checking for equality
-diamonds['m_carat']               # calling the m_carat column of diamonds
-.sum()                            # and adding the number of flags (1's) together
-
-
-
-*******************************************************************************
-
-
-Footnote 6: creating a for loop to flag missing values
-
-for col in diamonds:              # Starting a for loop
-
-Create columns that are           # Docstring to explain the loop
-0s if a value was not missing
-and 1 if a value is missing.
-    
-if                                # Starting an if statement
-diamonds[col]                     # ...that takes each column in the diamonds dataset
-.isnull().any():                  # and checks to see if it has at least one missing value
-
-diamonds['m_'+col] =              # and if so, creates a new column with named m_ + the original column name
-diamonds[col].                    # and the values for this new column
-isnull().astype(int)              # are 1's or 0's based on whether the orginal observation was missing
-
-
-*******************************************************************************
-
-
-Footnote 7: copying a dataframe to different objects
-
-df_dropped =                       # create a new object 'df_dropped'
-pd.DataFrame                       # call the package pd.DataFrame
-.copy(diamonds)                    # and use its copy function on 'diamonds'
-
-
-*******************************************************************************
-
-
-Footnote 8: filling missing values across the entire dataset
-
-carat_mean =                       # create a new object called carat_mean
-diamonds['carat'].mean()           # by taking the mean of the 'carat' column
-
-diamonds['carat'] =                # prepare to modify the 'carat' column
-(diamonds['carat']                 # by putting it on both sides of =
-.fillna(carat_mean)                # fill in the na values with carat_mean
-.round(2))                         # and round the results to two decimal places
-
-
-*******************************************************************************
-
-
-Footnote 9: for loop for filling missing values across the entire dataset
-
-for col in df_mean:                # starting a for loop
-
-\""" Impute... \"""                # explaining what the loop does
-
-if df_mean[col]                    # adding a conditional if statement
-.isnull()                          # that first checks if a value is missing
-.any():                            # then checks if there is at least one missing value
-    
-col_mean = df_mean[col].mean()     # defining an object to store the mean of the column
-
-df_mean[col] =                     # redefining the object 'df_dropped'
-df_mean[col]                       # by putting it on both sides of the '='
-.fillna(col_mean)                  # impute missing values using the mean
-.round(2)                          # then round it to two decimal places
-
-
-*******************************************************************************
-
-
-Footnote 10: dropping missing values
-
-df_dropped =                       # redefining the object 'df_dropped'
-df_dropped                         # by putting it on both sides of the '='
-.dropna()                          # 'dropna()' will remove all rows with missing values
-.round(2)                          # rounding the result to two decimal places
-
-
-*******************************************************************************
-
-
-Footnote 11: checking for missing values
-
-print(                             # calling 'print()'
-df_dropped.isnull()                # on a null boolean of 'df_dropped'
-.any()                             # and aggregating the result to the column level
-.any())                            # and finally to the dataset level
-
-
-*******************************************************************************
-
-
-Footnote 12: plotting histograms
-
-plt.subplot(2, 2,                  # creating a 2x2 plot matrix
-4)                                 # and setting this graph to the bottom-left window
-
-plt.hist(df_dropped['cut'],        # calling the '.hist' function on some data
-         bins = 3,                 # and setting bins equal to three
-         color='purple',           # and making the data bars purple
-         alpha = 0.1)              # and fading the data bars 90%
-plt.xlabel('Cut')                  # adding a label for the x-axis
-
-plt.savefig('....png')             # saving the figure as a .png file
-
-plt.show()                         # and finally showing the plot
-
-
-*******************************************************************************
-
-Footnote 13: mean imputation for clarity
-
-fill =                             # creating a variable called fill
-diamonds['clarity'].mean()         # that is equal to the mean of clarity from diamonds
-
-
-diamonds['clarity'] =              # redefining clarity from diamonds
-diamonds['clarity']                # by taking its original values
-.fillna(fill)                      # and filling missing values with 'fill' as defined above
-.astype(int)                       # and converting the values to integers
-
-
-*******************************************************************************
-"""
-
-
-
-
-
-
-
-
