@@ -1,23 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Aug 11 18:47:19 2018
 
-@author: chase.kusterer
+@author: ArthurFMendes
 
 Purpose:
     This code is meant to treat outliers in the diamond dataset
-"""
-
-"""
-Prof. Chase:
-    As you move through this code, try to notice how much code has been
-    recycled from the missing value imputation script:
-    'diamond_missing_value_imputation.py'
-    
-    This is one of the many benefits of taking a programmatic approach
-    to data science.
-
 """
 
 
@@ -31,14 +19,6 @@ import seaborn as sns # more data visualization
 file ='diamonds_imputed.xlsx'
 diamonds = pd.read_excel(file)
 
-
-"""
-Prof. Chase:
-    Notice how we have used the same object name as before for our
-    base dataset. Be careful when doing this as it can cause unintended
-    bugs in your code.
-
-"""
 
 
 ###############################################################################
@@ -62,20 +42,12 @@ diamonds[['carat',
                               1.00])
 
 
-# See Footnote 1 for an explanation of the code above
-
 
 ###############################################################################
 # Outlier detection using boxplots
 ###############################################################################
 
 # Using boxplots for distribution analysis
-
-"""
-Prof. Chase:
-    We can use help(pd.DataFrame.boxplot) to find more information on
-    the following boxplot() function.
-"""
 
 # A basic boxplot
 diamonds.boxplot(column = ['carat'])
@@ -102,9 +74,6 @@ plt.title("Carat by Channel")
 plt.suptitle("")
 
 plt.show()
-
-
-# See Footnote 2 for an explanation of the code above
 
 
 
@@ -190,12 +159,6 @@ plt.show()
 # Using matplotlib.pyplot
 ###############################################################################
 
-"""
-Prof. Chase:
-    Remember, we can use help(plt.boxplot) to find more information on
-    'plt.boxplot()'
-"""
-
 plt.boxplot(x = 'price',
             data = diamonds,
             vert = False,
@@ -242,10 +205,6 @@ plt.hist(x = 'price',
 
 plt.xlabel("Price")
 plt.show()
-
-
-# See Footnote 3 for an explanation of the code above
-
 
 ########################
 
@@ -412,13 +371,6 @@ plt.show()
 # Outlier cutoff notes (exclusive)
 ###############################################################################
 
-"""
-Prof. Chase:
-    By putting our outlier thresholds here, our code is easier to
-    maintain. If we would like to adjust our thresholds later, we only
-    have to update one part of the code.
-"""
-
 price_limit_hi = 12500
 
 carat_limit_0 = 2.03
@@ -454,9 +406,6 @@ plt.xlabel('Price')
 plt.axvline(x = price_limit_hi,
             label = 'Outlier Thresholds',
             linestyle = '--')
-
-
-# See Footnote 4 for an explanation of the code above
 
 
 
@@ -566,18 +515,6 @@ check = (diamonds.loc[ : , ['price', 'out_price']]
                                           ascending = False))
 
 
-# See Footnote 5 for an explanation of the code above
-
-
-
-"""
-(Advanced)
-Prof. Chase:
-   Observe the warning in the for loop below. We achieve the same
-   result as with the loop above, but at the cost of stability. This
-   is why techniques like loc and iloc were invented.
-"""
-
 for val in enumerate(diamonds['price']):
     
     if val[1] > price_limit_hi:
@@ -623,8 +560,6 @@ for val in enumerate(diamonds.loc[ : , 'carat']):
         diamonds.loc[val[0], 'out_carat'] = 1
 
 
-# See Footnote 6 for an explanation of the code above
-        
         
 
 diamonds['out_carat'].abs().sum()
@@ -728,8 +663,6 @@ diamonds['out_sum'] = (diamonds['out_price']   +
                        diamonds['out_cut'])
 
 
-# See Footnote 7 for an explanation of the code above
-
 
 
 check = (diamonds.loc[ : , ['out_sum',
@@ -741,9 +674,6 @@ check = (diamonds.loc[ : , ['out_sum',
                                           ascending = False))
 
 
-# See Footnote 8 for an explanation of the code above
-
-
 
 ###############################################################################
 # Saving things for future use
@@ -752,168 +682,3 @@ check = (diamonds.loc[ : , ['out_sum',
 diamonds.to_excel('diamonds_flagged.xlsx', index = False)
 
 
-
-"""
-###############################################################################
-# Footnotes
-###############################################################################
-
-
-Footnote 0: the purpose of footnotes
-
-to give a line-by-line explanation of a code snippet
-
-
-*******************************************************************************
-
-
-Footnote 1: calling quantiles
-
-diamonds[                                      # calling the diamond dataset
-['carat', 'color', 'clarity', 'cut', 'price']  # with columns in a list
-].quantile(                                    # calling the quantile function
-[0.20, 0.40, 0.60, 0.80, 1.00])                # with specific quantiles in a list
-
-
-*******************************************************************************
-
-
-Footnote 2: calling quantiles
-
-diamonds.boxplot(                    # calling boxplot on the diamonds dataset
-column = ['carat'],                  # specifying the carat column
-by = 'channel',                      # separating the data by the channel column
-vert = False,                        # setting vert = False to make horizontal boxplots
-manage_xticks = True,                # setting manage_xticks = True to help format the plot
-patch_artist = False,                # setting patch_artist = False to get transparent boxes
-meanline = True,                     # setting meanline = True to get a line representing the mean
-showmeans = True)                    # setting showmeans = True to show the mean and median lines
-
-
-plt.title("Carat by Channel")        # creating a custom title
-plt.suptitle("")                     # supressing the default title
-
-plt.show()                           # displaying the plot
-
-
-*******************************************************************************
-
-
-Footnote 3: calling quantiles
-
-plt.hist(                            # calling the histogram function from plt
-x = 'price',                         # on the variable price
-data = diamonds,                     # from the diamond dataset
-bins = 'fd',                         # with the number of bins equal to the Freedman-Diaconis rule
-cumulative = True,                   # setting cumulative = True to generate a cumulative distribution
-histtype = 'step'                    # setting histtype = 'step' to get steps and a hallow histogram
-)                                    # closing the histogram function
-
-
-plt.xlabel("Price")                  # setting the x-axis label to "Price"
-plt.show()                           # displaying the plot
-
-
-
-*******************************************************************************
-
-
-Footnote 4: working with distplot and custom lines
-
-plt.subplot(2, 2,                    # setting a 2 x 2 plot window
-1)                                   # and preparing to plot in window 1
-
-sns.distplot(                        # calling distplot from sns
-diamonds['price'],                   # on the variable price from the diamonds dataset
-bins = 35,                           # specifiying 35 bins
-color = 'g')                         # changing the color to green
-
-plt.xlabel('Price')                  # setting the x-axis label to "Price"
-
-
-plt.axvline(                         # calling a function to create a custom vertical line
-x = price_limit_hi,                  # which is drawn at price_limit_hi
-label = 'Outlier Thresholds',        # and labeled as 'Outlier Thresholds'
-linestyle = '--')                    # and with a '--' line style
-
-
-*******************************************************************************
-
-
-Footnote 5: for loop with enumerate
-
-diamonds['out_price'] = 0                    # creating a new column called out_price with all values set to zero
-
-
-for val in enumerate(                        # starting a for loop where indexes are also called
-diamonds.loc[ : , 'price']):                 # on all rows of the column price in the diamonds dataset
-    
-if val[1] > price_limit_hi:                  # if val[1] (i.e. the value of price) meets this condition
-diamonds.loc[val[0], 'out_price'] = 1        # out_price = 1 at the same index (i.e. val[0])
-
-
-diamonds['out_price']                        # from out_price diamonds
-.abs()                                       # take the absolute value of each row
-.sum()                                       # and sum the values together
-    
-
-check =                                      # creating a variable called check
-(diamonds.loc[ : , ['price', 'out_price']]   # that takes all rows of price and out_price from diamonds
-.sort_values('price',                        # sorts based on price
-ascending = False))                          # and orders so that the highest prices are at the top
-
-
-*******************************************************************************
-
-
-Footnote 6: working with distplot and custom lines
-
-
-diamonds['out_carat'] = 0                    # creating a new variable called out_carat
-
-
-for val in enumerate(                        # starting a for loop where indexes are also called
-diamonds.loc[ : , 'carat']):                 # on all rows of the column price in the diamonds dataset
-
-
-if diamonds.loc[val[0], 'channel'] == 0      # specifying a condition that subsets observations where channel is equal to zero
-and                                          # and also
-val[1] > carat_limit_0:                      # that carat is greater than carat_limit_0
-        
-diamonds.loc[val[0], 'out_carat'] = 1        # and if BOTH of these conditions are true, set out_carat to 1
-
-
-*******************************************************************************
-
-
-Footnote 7: creating a new variable: out_sum 
-
-
-diamonds['out_sum'] =                         # creating a new variable called out_sum
-(diamonds['out_price']   +                    # by adding together all of the out_ columns
-diamonds['out_carat']   +
-diamonds['out_clarity']   +
-diamonds['out_color'] +
-diamonds['out_cut'])
-
-
-*******************************************************************************
-
-
-Footnote 8: checking the content of the outlier flags
-
-
-check =                                       # creating a variable called check
-(diamonds.loc[ : ,                            # from the diamond dataset
-['out_sum',                                   # taking all outlier flags including out_sum
-'out_price',
-'out_carat',
-'out_clarity',
-'out_color',
-'out_cut']
-].sort_values(['out_sum'],                    # that is sorted based on out_sum
-ascending = False))                           # where the highest value of out_sum is on top
-
-    
-*******************************************************************************
-"""
