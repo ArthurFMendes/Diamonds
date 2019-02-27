@@ -24,10 +24,6 @@ diamonds = pd.read_excel(file)
 # Viewing our dataset
 ###############################################################################
 
-"""
-Prof. Chase:
-    Click on the data object in the variable explorer to view it.
-"""
 
 # Taking a look at the entire dataset
 diamonds
